@@ -27,59 +27,39 @@ function Cursor() {
   );
 }
 
-/* ================= CINEMATIC LOGO (INTRO + FLOAT) ================= */
-function CinematicLogo() {
-  const ref = useRef(null);
+/* ================= NAVBAR ================= */
+function Navbar() {
+  const [hidden, setHidden] = useState(false);
+  const lastScroll = useRef(0);
 
   useEffect(() => {
-    const el = ref.current;
+    const handleScroll = () => {
+      if (window.scrollY > lastScroll.current) {
+        setHidden(true); // scroll down
+      } else {
+        setHidden(false); // scroll up
+      }
+      lastScroll.current = window.scrollY;
+    };
 
-    // INTRO ANIMATION (important: visible entrance)
-    gsap.fromTo(
-      el,
-      { y: 120, scale: 0.6, opacity: 0 },
-      { y: 0, scale: 1.15, opacity: 1, duration: 2, ease: "power3.out" }
-    );
-
-    // FLOAT LOOP
-    gsap.to(el, {
-      y: -8,
-      duration: 4,
-      repeat: -1,
-      yoyo: true,
-      ease: "sine.inOut",
-    });
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  return (
-    <div className="relative flex items-center justify-center">
-      <img
-        ref={ref}
-        src="/logo.png"
-        className="w-[460px] object-contain z-10"
-        style={{ filter: "drop-shadow(0 0 25px rgba(30,58,138,0.25))" }}
-      />
-    </div>
-  );
-}
-
-/* ================= NAVBAR (FIXED NOT MOVING) ================= */
-function Navbar() {
   const links = ["home", "vision", "capability", "proof", "leadership", "contact"];
 
   return (
-    <div className="fixed top-0 left-0 w-full z-[9999] bg-[#0B1B3A] border-b border-white/10 backdrop-blur-xl">
+    <div
+      className={`fixed top-0 left-0 w-full z-[9999] transition-transform duration-500 ${
+        hidden ? "-translate-y-full" : "translate-y-0"
+      } bg-[#0B1B3A]/95 backdrop-blur-xl border-b border-white/10`}
+    >
       <div className="max-w-7xl mx-auto px-6 flex justify-between items-center py-4">
 
-        {/* LOGO LEFT */}
-        <div className="flex items-center gap-3">
-         
-          <div className="text-white text-[11px] tracking-[0.25em]">
-            SMART SMILE WAY
-          </div>
+        <div className="text-white text-[11px] tracking-[0.25em]">
+          SMART SMILE WAY
         </div>
 
-        {/* MENU */}
         <div className="hidden md:flex gap-8 text-[11px] tracking-[0.25em]">
           {links.map((l) => (
             <button
@@ -99,6 +79,32 @@ function Navbar() {
   );
 }
 
+/* ================= LOGO ================= */
+function CinematicLogo() {
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const tl = gsap.timeline();
+
+    tl.fromTo(
+      ref.current,
+      { y: 120, scale: 0.6, opacity: 0 },
+      { y: 0, scale: 1.05, opacity: 1, duration: 2, ease: "power3.out" }
+    );
+  }, []);
+
+  return (
+    <div className="relative flex items-center justify-center">
+      <img
+        ref={ref}
+        src="/logo.png"
+        className="w-[460px] object-contain"
+        style={{ filter: "drop-shadow(0 0 25px rgba(30,58,138,0.25))" }}
+      />
+    </div>
+  );
+}
+
 /* ================= HERO ================= */
 function Hero() {
   const ref = useRef(null);
@@ -109,7 +115,6 @@ function Hero() {
 
   return (
     <section id="home" className="min-h-screen flex items-center justify-center bg-white pt-24">
-
       <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
 
         <CinematicLogo />
@@ -165,7 +170,7 @@ function Section({ id, title, subtitle, children, dark }) {
   );
 }
 
-/* ================= FOOTER (NEW PREMIUM WEBSITE STYLE) ================= */
+/* ================= FOOTER ================= */
 function Footer() {
   const links = ["home", "vision", "capability", "proof", "leadership", "contact"];
 
@@ -174,10 +179,9 @@ function Footer() {
 
       <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-10">
 
-        {/* WHO WE ARE */}
         <div>
           <div className="flex items-center gap-3 mb-4">
-            <img src="/logo.png" className="w-40 h-40 rounded-full" />
+            <img src="/logo.png" className="w-24 h-24 rounded-full" />
             <span className="tracking-[0.25em] text-sm">SMART SMILE WAY</span>
           </div>
           <p className="text-white/60 text-sm">
@@ -185,7 +189,6 @@ function Footer() {
           </p>
         </div>
 
-        {/* MENU */}
         <div>
           <h3 className="mb-4 tracking-[0.2em] text-sm">NAVIGATION</h3>
           <div className="space-y-2 text-white/60 text-sm">
@@ -197,7 +200,6 @@ function Footer() {
           </div>
         </div>
 
-        {/* SOCIAL */}
         <div>
           <h3 className="mb-4 tracking-[0.2em] text-sm">SOCIAL</h3>
           <p className="text-white/60 text-sm">
@@ -215,27 +217,6 @@ function Footer() {
   );
 }
 
-/* ================= CONTACT (UPGRADED MESSAGE US) ================= */
-function Contact() {
-  return (
-    <Section id="contact" title="Contact" subtitle="START · CONNECT">
-      <div className="max-w-2xl space-y-6">
-
-        <h3 className="text-blue-400 tracking-[0.2em]">MESSAGE US</h3>
-
-        <input className="w-full border border-blue-100 p-3" placeholder="Your Name" />
-        <input className="w-full border border-blue-100 p-3" placeholder="Email" />
-        <textarea className="w-full border border-blue-100 p-3 h-32" placeholder="Your Message" />
-
-        <button className="bg-[#0B1B3A] text-white px-6 py-3">
-          Send Message
-        </button>
-
-      </div>
-    </Section>
-  );
-}
-
 /* ================= MAIN ================= */
 export default function HomePage() {
   return (
@@ -243,25 +224,23 @@ export default function HomePage() {
 
       <Cursor />
       <Navbar />
-
       <Hero />
 
       {/* VISION */}
       <Section id="vision" title="About Us" subtitle="VISION · MISSION">
-        <div className="space-y-10">
-          <div>
-            <h3 className="text-blue-400 mb-3">VISION</h3>
-            <p>
-              To become a leading force in educational investment and management,
-              transforming schools and nurseries into globally recognized, high-performance institutions.
+        <div className="grid md:grid-cols-2 gap-10">
+
+          <div className="bg-gradient-to-br from-blue-50 to-white p-10 rounded-2xl border border-blue-100 shadow-sm">
+            <h3 className="text-blue-500 mb-6">VISION</h3>
+            <p className="text-[#0B1B3A]/80 leading-relaxed">
+              To become a leading force in educational investment and management, transforming schools and nurseries into globally recognized, high-performance institutions through innovation and international standards.
             </p>
           </div>
 
-          <div>
-            <h3 className="text-blue-400 mb-3">MISSION</h3>
-            <p>
-              We design, develop, and operate international schools by integrating academic excellence,
-              institutional governance, and financial efficiency.
+          <div className="bg-gradient-to-br from-[#0B1B3A] to-[#102A5C] p-10 rounded-2xl border border-white/10 shadow-sm text-white">
+            <h3 className="text-blue-300 mb-6">MISSION</h3>
+            <p className="text-white/80 leading-relaxed">
+              We design, develop, and operate international schools by integrating academic excellence, institutional governance, and financial efficiency, delivering scalable education models that meet global accreditation standards and workforce demands.
             </p>
           </div>
         </div>
@@ -269,14 +248,20 @@ export default function HomePage() {
 
       {/* SERVICES */}
       <Section id="capability" title="Our Services" subtitle="SYSTEMS · STRUCTURE" dark>
-        <div className="space-y-4 text-white/80">
-          <p>• Establishing and operating international schools</p>
-          <p>• Cambridge, Edexcel, Oxford, Cognia accreditation</p>
-          <p>• British, American & IB systems</p>
-          <p>• Licensing under Egyptian Education Authority</p>
-          <p>• Educational strategy & structure development</p>
-          <p>• Teacher training & curriculum preparation</p>
-          <p>• Workforce development & job placement</p>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {[
+            "Establishing and operating international schools",
+            "Cambridge, Edexcel, Oxford, Cognia accreditation",
+            "British, American & IB systems",
+            "Licensing under Egyptian Education Authority",
+            "Educational strategy & structure development",
+            "Teacher training & curriculum preparation",
+            "Workforce development & job placement",
+          ].map((item, i) => (
+            <div key={i} className="bg-white/5 p-6 rounded-2xl hover:bg-white/10 transition">
+              {item}
+            </div>
+          ))}
         </div>
       </Section>
 
@@ -307,8 +292,6 @@ export default function HomePage() {
           ))}
         </div>
       </Section>
-
-      <Contact />
 
       <Footer />
 
