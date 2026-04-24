@@ -181,8 +181,8 @@ function Footer() {
 
         <div>
           <div className="flex items-center gap-3 mb-4">
-            <img src="/logo.png" className="w-24 h-24 rounded-full" />
-            <span className="tracking-[0.25em] text-sm">SMART SMILE WAY</span>
+            <img src="/logo.png" className="w-30 h-30 rounded-full" />
+            <span className="tracking-[0.25em] text-sm"></span>
           </div>
           <p className="text-white/60 text-sm">
             Educational Investment Group building future-ready institutions.
